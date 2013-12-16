@@ -9,34 +9,32 @@ import (
 	"github.com/philips/go-namespace/net"
 )
 
-func HelloServer(w http.ResponseWriter, req *http.Request) {
-	io.WriteString(w, "hello socket namespace world!\n")
+func HelloPid(w http.ResponseWriter, req *http.Request) {
+	io.WriteString(w, "hello pid namespace!\n")
 }
 
+func HelloServer(w http.ResponseWriter, req *http.Request) {
+	io.WriteString(w, "hello original namespace!\n")
+}
+
+// This example application creates an http listening inside of the namespace
+// of the process given in os.Args[0] on port 8080 and an http server in the
+// original namespace each with different messages.
 func main() {
 	args := os.Args
+
+	pid, _ := strconv.Atoi(args[1])
+	l, err := net.ListenNamespace(uintptr(pid), "tcp", ":8080")
+	if err != nil {
+		panic(err)
+	}
+	http.HandleFunc("/", HelloPid)
+	go http.Serve(l, nil)
 
 	out := http.NewServeMux()
 	out.HandleFunc("/", HelloServer)
 	srv := &http.Server{
 		Addr:           ":8080",
-		Handler:        out,
-	}
-	go srv.ListenAndServe()
-
-
-	pid, _ := strconv.Atoi(args[1])
-	l, err := net.ListenNamespace(uintptr(pid))
-	if err != nil {
-		panic(err)
-	}
-	http.HandleFunc("/", HelloServer)
-	go http.Serve(l, nil)
-
-	out = http.NewServeMux()
-	out.HandleFunc("/", HelloServer)
-	srv = &http.Server{
-		Addr:           ":8081",
 		Handler:        out,
 	}
 	srv.ListenAndServe()

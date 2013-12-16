@@ -8,7 +8,7 @@ import (
 	"github.com/philips/go-namespace/namespace"
 )
 
-func socketat(fd, domain, typ, proto int) (gnet.Listener, error) {
+func socketat(fd int, net, laddr string) (gnet.Listener, error) {
 	origNs, _ := namespace.OpenNamespace(namespace.CLONE_NEWNET, os.Getpid())
 	defer syscall.Close(int(origNs))
 	defer namespace.Setns(origNs, namespace.CLONE_NEWNET)
@@ -20,16 +20,17 @@ func socketat(fd, domain, typ, proto int) (gnet.Listener, error) {
 	}
 
 	// Create our socket
-	return gnet.Listen("tcp", ":12345")
+	return gnet.Listen(net, laddr)
 }
 
 // ListenNamespace creates a net.Listener in the namespace of the given pid.
-func ListenNamespace(pid uintptr) (gnet.Listener, error) {
+// The arguments are identical to net.Listen.
+func ListenNamespace(pid uintptr, net, laddr string) (gnet.Listener, error) {
 	fd, err := namespace.OpenNamespace(namespace.CLONE_NEWNET, int(pid))
 	defer syscall.Close(int(fd))
 	if err != nil {
 		return nil, err
 	}
 
-	return socketat(int(fd), syscall.AF_INET, syscall.SOCK_STREAM, 0)
+	return socketat(int(fd), net, laddr)
 }

@@ -23,6 +23,7 @@ func socketat(fd, domain, typ, proto int) (gnet.Listener, error) {
 	return gnet.Listen("tcp", ":12345")
 }
 
+// ListenNamespace creates a net.Listener in the namespace of the given pid.
 func ListenNamespace(pid uintptr) (gnet.Listener, error) {
 	fd, err := namespace.OpenNamespace(namespace.CLONE_NEWNET, int(pid))
 	defer syscall.Close(int(fd))

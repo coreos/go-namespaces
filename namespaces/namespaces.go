@@ -38,14 +38,14 @@ func init() {
 	}
 }
 
-// setns is a wrapper around Syscall for the SYS_SETNS
+// Setns is a wrapper around Syscall for the SYS_SETNS
 func Setns(fd uintptr, nstype uintptr) syscall.Errno {
 	// TODO: make this work on non-amd64 architectures
 	_, _, err := syscall.Syscall(SYS_SETNS, uintptr(fd), uintptr(nstype), 0)
 	return err
 }
 
-// openNamespace opens a file descriptor for a given pid and type and returns
+// OpenNamespace opens a file descriptor for a given pid and type and returns
 // the open fd. The caller is responsible for closing the fd.
 func OpenNamespace(nstype uintptr, pid int) (uintptr, error) {
 	var nsPath string

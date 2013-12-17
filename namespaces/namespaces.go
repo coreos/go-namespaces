@@ -1,3 +1,4 @@
+// namespace implements low level APIs for moving a process into a given Linux Namespace.
 package namespace
 
 import (

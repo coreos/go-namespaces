@@ -18,3 +18,8 @@ Inside the namespace with private networking:
 ```sh
 telnet 127.0.0.1 23
 ```
+
+### Libraries
+
+- [github.com/coreos/go-namespaces/net](http://godoc.org/github.com/coreos/go-namespaces/net)
+- [github.com/coreos/go-namespaces/namespaces](http://godoc.org/github.com/coreos/go-namespaces/namespaces)

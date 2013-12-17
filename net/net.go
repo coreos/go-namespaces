@@ -1,3 +1,4 @@
+// net implements a simple interface to the network namespaces.
 package net
 
 import (
@@ -5,7 +6,7 @@ import (
 	"os"
 	"syscall"
 
-	"github.com/philips/go-namespace/namespace"
+	"github.com/coreos/go-namespaces/namespaces"
 )
 
 func socketat(fd int, net, laddr string) (gnet.Listener, error) {

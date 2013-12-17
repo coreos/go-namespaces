@@ -8,7 +8,7 @@ import (
 	"net"
 	"os"
 
-	nameNet "github.com/philips/go-namespace/net"
+	nameNet "github.com/coreos/go-namespaces/net"
 )
 
 var target *int = flag.Int("t", 0, "target pid")

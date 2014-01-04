@@ -1,0 +1,1 @@
+go run third_party.go install github.com/coreos/go-namespaces/nspipe

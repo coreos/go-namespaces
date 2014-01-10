@@ -9,9 +9,11 @@ import (
 	"os"
 
 	nameNet "github.com/coreos/go-namespaces/net"
+	"github.com/coreos/go-namespaces/namespace"
 )
 
 var target *int = flag.Int("t", 0, "target pid")
+var path *string = flag.String("p", "", "target path")
 var targetAddr *string = flag.String("l", "localhost:23", "local address")
 var remoteAddr *string = flag.String("r", "towel.blinkenlights.nl:23", "remote address")
 
@@ -28,16 +30,24 @@ func proxyConn(conn *net.Conn) {
 func main() {
 	flag.Parse()
 
-	if *target == 0 {
-		fmt.Fprintln(os.Stderr, "error: a target pid is required")
+	if *target == 0  && *path == "" {
+		fmt.Fprintln(os.Stderr, "error: a target pid or path is required")
 		flag.PrintDefaults()
 		return
 	}
 
-	fmt.Printf("PROXY: targetPid:%d targetAddr:%v remoteAddr:%v\n",
-		*target, *targetAddr, *remoteAddr)
+	if *target != 0 {
+		p, err := namespace.ProcessPath(*target, namespace.CLONE_NEWNET)
+		if err != nil {
+			panic(err)
+		}
+		*path = p
+	}
 
-	listener, err := nameNet.ListenNamespace(uintptr(*target), "tcp", *targetAddr)
+	fmt.Printf("PROXY: targetPath:%d targetAddr:%v remoteAddr:%v\n",
+		*path, *targetAddr, *remoteAddr)
+
+	listener, err := nameNet.ListenNamespace(*path, "tcp", *targetAddr)
 	if err != nil {
 		panic(err)
 	}

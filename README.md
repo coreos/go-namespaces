@@ -19,7 +19,19 @@ Inside the namespace with private networking:
 telnet 127.0.0.1 23
 ```
 
+You can also create a new namespace using iproute2
+
+```sh
+sudo ip netns add test
+sudo ip netns exec test netstat -ltup
+```
+
+```sh
+nspipe -p /var/run/netns/test
+sudo ip netns  exec test netstat -ltup
+```
+
 ### Libraries
 
 - [github.com/coreos/go-namespaces/net](http://godoc.org/github.com/coreos/go-namespaces/net)
-- [github.com/coreos/go-namespaces/namespaces](http://godoc.org/github.com/coreos/go-namespaces/namespaces)
+- [github.com/coreos/go-namespaces/namespace](http://godoc.org/github.com/coreos/go-namespaces/namespace)

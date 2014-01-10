@@ -24,7 +24,7 @@ func socketat(fd int, net, laddr string) (gnet.Listener, error) {
 	return gnet.Listen(net, laddr)
 }
 
-// ListenNamespace creates a net.Listener in the namespace of the given pid.
+// ListenProcessNamespace creates a net.Listener in the namespace of the given pid.
 // The arguments are identical to net.Listen.
 func ListenProcessNamespace(pid uintptr, net, laddr string) (gnet.Listener, error) {
 	fd, err := namespace.OpenProcess(int(pid), namespace.CLONE_NEWNET)
@@ -36,7 +36,7 @@ func ListenProcessNamespace(pid uintptr, net, laddr string) (gnet.Listener, erro
 	return socketat(int(fd), net, laddr)
 }
 
-// ListenNamespace creates a net.Listener in the namespace of the given pid.
+// ListenNamespace creates a net.Listener in the namespace of the given namespace path.
 // The arguments are identical to net.Listen.
 func ListenNamespace(nsPath string, net, laddr string) (gnet.Listener, error) {
 	fd, err := namespace.Open(nsPath)

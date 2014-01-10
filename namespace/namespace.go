@@ -46,9 +46,8 @@ func Setns(fd uintptr, nstype uintptr) syscall.Errno {
 	return err
 }
 
-// OpenNamespace opens a file descriptor for a given pid and type and returns
-// the open fd. The caller is responsible for closing the fd.
-func OpenNamespace(nstype uintptr, pid int) (uintptr, error) {
+// ProcessPath returns the path to a namespace given a target pid and namespace type.
+func ProcessPath(pid int, nstype uintptr) (string, error) {
 	var nsPath string
 
 	for _, n := range Types {
@@ -58,13 +57,34 @@ func OpenNamespace(nstype uintptr, pid int) (uintptr, error) {
 	}
 
 	if nsPath == "" {
-		return 0, errors.New("Cannot find namespace type")
+		return "", errors.New("Cannot find namespace type")
 	}
 
+	return nsPath, nil
+}
+
+// OpenProcess opens a file descriptor for a given pid and type and returns
+// the open fd. The caller is responsible for closing the fd.
+func OpenProcess(pid int, nstype uintptr) (uintptr, error) {
+	nsPath, err := ProcessPath(pid, nstype)
+	if err != nil {
+		return 0, err
+	}
+	return Open(nsPath)
+}
+
+// Opens the given path and returns the raw file descriptor.
+// The returned fd acts as the handle to the namespace.
+func Open(nsPath string)  (uintptr, error) {
 	file, err := os.Open(nsPath)
 	if err != nil {
 		return 0, err
 	}
 
 	return file.Fd(), nil
+}
+
+// Close closes a namespace.
+func Close(fd uintptr) error {
+	return syscall.Close(int(fd))
 }

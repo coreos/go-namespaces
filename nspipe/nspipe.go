@@ -8,8 +8,8 @@ import (
 	"net"
 	"os"
 
-	nameNet "github.com/coreos/go-namespaces/net"
 	"github.com/coreos/go-namespaces/namespace"
+	nameNet "github.com/coreos/go-namespaces/net"
 )
 
 var target *int = flag.Int("t", 0, "target pid")
@@ -30,7 +30,7 @@ func proxyConn(conn *net.Conn) {
 func main() {
 	flag.Parse()
 
-	if *target == 0  && *path == "" {
+	if *target == 0 && *path == "" {
 		fmt.Fprintln(os.Stderr, "error: a target pid or path is required")
 		flag.PrintDefaults()
 		return
@@ -44,7 +44,7 @@ func main() {
 		*path = p
 	}
 
-	fmt.Printf("PROXY: targetPath:%d targetAddr:%v remoteAddr:%v\n",
+	fmt.Printf("PROXY: targetPath:%v targetAddr:%v remoteAddr:%v\n",
 		*path, *targetAddr, *remoteAddr)
 
 	listener, err := nameNet.ListenNamespace(*path, "tcp", *targetAddr)

@@ -75,7 +75,7 @@ func OpenProcess(pid int, nstype uintptr) (uintptr, error) {
 
 // Opens the given path and returns the raw file descriptor.
 // The returned fd acts as the handle to the namespace.
-func Open(nsPath string)  (uintptr, error) {
+func Open(nsPath string) (uintptr, error) {
 	file, err := os.Open(nsPath)
 	if err != nil {
 		return 0, err
